@@ -14,17 +14,17 @@ amd64control:
 	cp control.template amd64control
 	sed -i 's/PACKAGE/nekofetch/' amd64control
 	sed -i 's/ARCH/amd64/' amd64control
-	sed -i 's/VERSION/$(LATEST_TAG)/' amd64control
+	sed -i 's/VERSION/$(VERSION)/' amd64control
 
 iosdebroot: ioscontrol
-	mkdir -p iosdebroot/debian
+	mkdir -p iosdebroot/DEBIAN
 	mkdir -p iosdebroot/usr/bin
-	cp ioscontrol iosdebroot/debian/control
+	cp ioscontrol iosdebroot/DEBIAN/control
 	cp nekofetch iosdebroot/usr/bin/nekofetch
 amd64debroot: amd64control
-	mkdir -p amd64debroot/debian
+	mkdir -p amd64debroot/DEBIAN
 	mkdir -p amd64debroot/usr/bin
-	cp amd64control amd64debroot/debian/control
+	cp amd64control amd64debroot/DEBIAN/control
 	cp nekofetch amd64debroot/usr/bin/nekofetch
 
 iosdeb: iosdebroot
