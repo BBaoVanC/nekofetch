@@ -9,7 +9,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - run: git fetch --prune --unshallow --tags
+    - name: Fetch all history for all tags and branches
+      run: git fetch --prune --unshallow --tags
+
     - name: Run shellcheck
       uses: ludeeus/action-shellcheck@master
 
