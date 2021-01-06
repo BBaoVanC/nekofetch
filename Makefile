@@ -1,4 +1,6 @@
-VERSION?=$(shell git describe --tags)
+VERSION ?= $(shell git tag --points-at HEAD)
+VERSION += "$(shell git tag | tail -1)-git-$(shell git rev-parse --short HEAD)"
+VERSION := $(word 1, $(VERSION))
 
 all: options iosdeb amd64deb
 
