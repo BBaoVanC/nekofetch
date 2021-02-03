@@ -9,7 +9,7 @@ case "$1" in
         echo ""
         echo "Options:"
         echo "--nsfw|-n : Get nsfw image"
-        echo "--sfw|-n : Get sfw image"
+        echo "--sfw|-s : Get sfw image"
         echo "--version|-v : Version"
         echo ""
         echo "Nekofetch v1.3.2 fork by 6yntar05 (added colors)"
