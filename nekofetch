@@ -3,40 +3,20 @@
 tmpfile="$(mktemp -p /tmp nekofetchXXXXXXXX)"
 
 case "$1" in
-    "--help"|"-h")
-        echo "Usage: nekofetch --option"
-        echo "Nekofetch is neofetch but with nekos"
-        echo ""
-        echo "Options:"
-        echo "--nsfw|-n : Get nsfw image"
-        echo "--sfw|-s : Get sfw image"
-        echo "--version|-v : Version"
-        echo ""
-        echo "Nekofetch v1.3.2 fork by 6yntar05 (added colors)"
-        echo "Original: https://github.com/proprdev"
-        exit
-        ;;
-        
-    "--version"|"-v")
-        echo "Nekofetch v1.3.2 fork by 6yntar05 (added colors)"
-        echo "Original: https://github.com/proprdev"
-        exit
-        ;;
-        
     "--nsfw"|"nsfw"|"-n"|"n")
+        echo "Getting a nsfw image"
         imgurl="https://nekos.life/api/v2/img/cum_jpg"
         ;;
-        
     "--sfw"|"sfw"|"-s"|"s")
+        echo "Getting a sfw image"
         imgurl="https://nekos.life/api/v2/img/neko"
         ;;
     *)
-        #default
+        echo "Could not interpret as either sfw or nsfw. Defaulting to sfw."
         imgurl="https://nekos.life/api/v2/img/neko"
         ;;
 esac
 
-#Removed checking width and height as unnecessary
 #echo "$2" | grep -qE '^[0-9]+$' && height="$2" || height="$(($(stty size | awk '{print $1}') - 5))"
 #echo "Using height $height"
 
@@ -46,13 +26,10 @@ curl -fsSLo "$tmpfile.jpg" "$url"
 if [ "$TERM" = "xterm-kitty" ]; then
     neofetch --kitty "$tmpfile.jpg"
 else
-    #NOTES: First lines in the terminal disappear, so i have to use clear
-    clear
-    neofetch --jp2a "$tmpfile.jpg" --crop_mode fill
-    #--crop_mode fill to focus on the face nekos
-    
     #jp2a --height="$height" "$tmpfile.jpg" > "$tmpfile"
     #neofetch --source "$tmpfile"
+    clear
+    neofetch --jp2a "$tmpfile.jpg"  --crop_mode fill
 fi
 
-rm -rf "$tmpfile.jpg" "$tmpfile"
+rm "$tmpfile.jpg" #"$tmpfile"
