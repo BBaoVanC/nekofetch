@@ -1,6 +1,6 @@
 Package: PACKAGE
 Architecture: ARCH
 Version: VERSION
-Depends: curl, jq, jp2a, neofetch
+Depends: curl, jq, jp2a, neofetch, imagemagick
 Description: neofetch but with nekos
 Maintainer: bbaovanc <bbaovanc@bbaovanc.com>
