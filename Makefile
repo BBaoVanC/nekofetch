@@ -17,13 +17,13 @@ options:
 	@echo "VERSION: $(VERSION)"
 
 install:
-	mkdir -p $(PREFIX)/bin
-	install -m 0755 nekofetch $(PREFIX)/bin/nekofetch
+	mkdir -p $(DESTDIR)$(PREFIX)/bin
+	install -m 0755 nekofetch $(DESTDIR)$(PREFIX)/bin/nekofetch
 	@echo "You may need to install jq, jp2a, and neofetch"
 	@echo "imagemagick is also required to use the kitty image backend"
 
 uninstall:
-	rm -f $(PREFIX)/bin/nekofetch
+	rm -f $(DESTDIR)$(PREFIX)/bin/nekofetch
 
 ioscontrol:
 	cp control.template ioscontrol
