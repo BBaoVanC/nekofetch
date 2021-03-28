@@ -1,24 +1,37 @@
 #!/bin/sh
 
 tmpfile="$(mktemp)"
+imgurl="https://nekos.life/api/v2/img/neko"
+height="$(($(stty size | awk '{print $1}') - 5))"
 
-case "$1" in
-    "--nsfw"|"nsfw"|"-n"|"n")
-        [ "$DEBUG" = "true" ] && echo "Getting a nsfw image"
-        imgurl="https://nekos.life/api/v2/img/cum_jpg"
-        ;;
-    "--sfw"|"sfw"|"-s"|"s")
-        [ "$DEBUG" = "true" ] && echo "Getting a sfw image"
-        imgurl="https://nekos.life/api/v2/img/neko"
-        ;;
-    *)
-        [ "$DEBUG" = "true" ] && echo "Could not interpret as either sfw or nsfw. Defaulting to sfw."
-        imgurl="https://nekos.life/api/v2/img/neko"
-        ;;
-esac
-
-echo "$2" | grep -qE '^[0-9]+$' && height="$2" || height="$(($(stty size | awk '{print $1}') - 5))"
-[ "$DEBUG" = "true" ] && echo "Using height $height"
+while :; do
+    case "$1" in
+        "--nsfw"|"nsfw"|"-n"|"n")
+            [ "$DEBUG" = "true" ] && echo "Getting a nsfw image"
+            imgurl="https://nekos.life/api/v2/img/cum_jpg"
+            ;;
+        "--sfw"|"sfw"|"-s"|"s")
+            [ "$DEBUG" = "true" ] && echo "Getting a sfw image"
+            imgurl="https://nekos.life/api/v2/img/neko"
+            ;;
+        "--w3m"|"w3m"|"--img"|"img"|"-i"|"i")
+            [ "$DEBUG" = "true" ] && echo "Using w3m image backend for neofetch"
+            use_w3m="true"
+            ;;
+        "--height"|"-h")
+            height="$2"
+            [ "$DEBUG" = "true" ] && echo "Using height $height"
+            shift
+            ;;
+        *)
+            if [ -z "$1" ]; then
+                break
+            fi
+            [ "$DEBUG" = "true" ] && echo "Could not interpret parameter '$1'."
+            ;;
+    esac
+    shift
+done
 
 url=$(curl -fsSL "$imgurl" | jq -r ".url")
 
@@ -31,6 +44,8 @@ if [ "$TERM" = "xterm-kitty" ]; then
     fi
 elif [ "$LC_TERMINAL" = "iTerm2" ]; then
     neofetch --iterm2 "$tmpfile.jpg"
+elif [ "$use_w3m" = "true" ]; then
+    neofetch --w3m "$tmpfile.jpg"
 else
     jp2a --height="$height" "$tmpfile.jpg" > "$tmpfile"
     neofetch --source "$tmpfile"
