@@ -1,37 +1,61 @@
 #!/bin/sh
 
 tmpfile="$(mktemp)"
-imgurl="https://nekos.life/api/v2/img/neko"
-height="$(($(stty size | awk '{print $1}') - 5))"
+imgtype=""
+use_height=""
 
 while :; do
     case "$1" in
         "--nsfw"|"nsfw"|"-n"|"n")
-            [ "$DEBUG" = "true" ] && echo "Getting a nsfw image"
-            imgurl="https://nekos.life/api/v2/img/cum_jpg"
+            if [ "$imgtype" = "" ]; then
+                [ "$DEBUG" = "true" ] && echo "Getting a nsfw image"
+                imgtype="nsfw"
+            else
+                echo "$imgtype images were already chosen! Please only specify either sfw or nsfw!"
+            fi
             ;;
         "--sfw"|"sfw"|"-s"|"s")
-            [ "$DEBUG" = "true" ] && echo "Getting a sfw image"
-            imgurl="https://nekos.life/api/v2/img/neko"
+            if [ "$imgtype" = "" ]; then
+                [ "$DEBUG" = "true" ] && echo "Getting a sfw image"
+                imgtype="sfw"
+            else
+                echo "$imgtype images were already chosen! Please only specify either sfw or nsfw!"
+            fi
             ;;
         "--w3m"|"w3m"|"--img"|"img"|"-i"|"i")
             [ "$DEBUG" = "true" ] && echo "Using w3m image backend for neofetch"
             use_w3m="true"
             ;;
         "--height"|"-h")
-            height="$2"
-            [ "$DEBUG" = "true" ] && echo "Using height $height"
+            if [ "$use_height" = "" ]; then
+                use_height="$2"
+                [ "$DEBUG" = "true" ] && echo "Using height $height"
+            else
+                echo "You can only specify the height argument once!"
+            fi
             shift
             ;;
         *)
             if [ -z "$1" ]; then
                 break
             fi
-            [ "$DEBUG" = "true" ] && echo "Could not interpret parameter '$1'."
+            echo "Could not interpret parameter '$1'."
             ;;
     esac
     shift
 done
+
+if [ "$imgtype" = "nsfw" ]; then
+    imgurl="https://nekos.life/api/v2/img/cum_jpg"
+else
+    imgurl="https://nekos.life/api/v2/img/neko"
+fi
+
+if [ "$use_height" != "" ]; then
+    height="$use_height"
+else
+    height="$(($(stty size | awk '{print $1}') - 5))"
+fi
 
 url=$(curl -fsSL "$imgurl" | jq -r ".url")
 
