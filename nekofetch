@@ -77,4 +77,6 @@ fi
 
 rm "$tmpfile" "$tmpfile.jpg"
 
-[ "$kitty_imagemagick_warn" = "true" ] && echo "WARN: imagemagick is required for kitty image backend" || true
+if [ "$kitty_imagemagick_warn" = "true" ]; then
+    echo "WARN: imagemagick is required for kitty image backend"
+fi
