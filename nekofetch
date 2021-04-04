@@ -58,6 +58,7 @@ else
 fi
 
 url=$(curl -fsSL "$imgurl" | jq -r ".url")
+[ "$DEBUG" = "true" ] && echo "Using image at url $url"
 
 curl -fsSLo "$tmpfile.jpg" "$url"
 if [ "$TERM" = "xterm-kitty" ]; then
