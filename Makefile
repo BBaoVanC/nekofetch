@@ -2,8 +2,6 @@ VERSION ?= $(shell git tag --points-at HEAD | sed 's/^v//')
 VERSION += 0-git-$(shell git rev-parse --short HEAD)
 VERSION := $(word 1, $(VERSION))
 
-PREFIX  ?= /usr
-
 all:
 	@echo "Nekofetch doesn't need to be compiled, run 'make install' to install"
 
@@ -17,13 +15,13 @@ options:
 	@echo "VERSION: $(VERSION)"
 
 install:
-	mkdir -p $(DESTDIR)$(PREFIX)/bin
-	install -m 0755 nekofetch $(DESTDIR)$(PREFIX)/bin/nekofetch
+	mkdir -p $(DESTDIR)/sbin
+	install -m 0755 nekofetch $(DESTDIR)/sbin/nekofetch
 	@echo "You may need to install jq, jp2a, and neofetch"
 	@echo "imagemagick is also required to use the kitty image backend"
 
 uninstall:
-	rm -f $(DESTDIR)$(PREFIX)/bin/nekofetch
+	rm -f $(DESTDIR)/sbin/nekofetch
 
 ioscontrol:
 	cp control.template ioscontrol
@@ -38,18 +36,18 @@ amd64control:
 
 iosdebroot: ioscontrol
 	mkdir -p iosdebroot/DEBIAN
-	mkdir -p iosdebroot/usr/bin
+	mkdir -p iosdebroot/sbin
 	mkdir -p iosdebroot/usr/share/doc/nekofetch
 	cp ioscontrol iosdebroot/DEBIAN/control
 	cp LICENSE iosdebroot/usr/share/doc/nekofetch/copyright
-	cp nekofetch iosdebroot/usr/bin/nekofetch
+	cp nekofetch iosdebroot/sbin/nekofetch
 amd64debroot: amd64control
 	mkdir -p amd64debroot/DEBIAN
-	mkdir -p amd64debroot/usr/bin
+	mkdir -p amd64debroot/sbin
 	mkdir -p amd64debroot/usr/share/doc/nekofetch
 	cp amd64control amd64debroot/DEBIAN/control
 	cp LICENSE amd64debroot/usr/share/doc/nekofetch/copyright
-	cp nekofetch amd64debroot/usr/bin/nekofetch
+	cp nekofetch amd64debroot/sbin/nekofetch
 
 iosdeb: iosdebroot
 	dpkg-deb -b "iosdebroot" "com.propr.nekofetch_$(VERSION)_iphoneos-arm.deb"
