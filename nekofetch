@@ -4,9 +4,17 @@ tmpfile="$(mktemp)"
 
 while :; do
     case "$1" in
+        "--verbose"|"--debug"|"-v")
+            if [ -z "$debug" ]; then
+                [ "$debug" = "true" ] && echo "Enabling debug output"
+                debug="true"
+            else
+                echo "debug has already been enabled!"
+            fi
+            ;;
         "--nsfw"|"nsfw"|"-n"|"n")
             if [ -z "$imgtype" ]; then
-                [ "$DEBUG" = "true" ] && echo "Getting a nsfw image"
+                [ "$debug" = "true" ] && echo "Getting a nsfw image"
                 imgtype="nsfw"
             else
                 echo "$imgtype images were already chosen! Please only specify either sfw or nsfw!"
@@ -14,20 +22,20 @@ while :; do
             ;;
         "--sfw"|"sfw"|"-s"|"s")
             if [ -z "$imgtype" ]; then
-                [ "$DEBUG" = "true" ] && echo "Getting a sfw image"
+                [ "$debug" = "true" ] && echo "Getting a sfw image"
                 imgtype="sfw"
             else
                 echo "$imgtype images were already chosen! Please only specify either sfw or nsfw!"
             fi
             ;;
         "--w3m"|"w3m"|"--img"|"img"|"-i"|"i")
-            [ "$DEBUG" = "true" ] && echo "Using w3m image backend for neofetch"
+            [ "$debug" = "true" ] && echo "Using w3m image backend for neofetch"
             use_w3m="true"
             ;;
         "--height"|"-h")
             if [ -z "$use_height" ]; then
                 use_height="$2"
-                [ "$DEBUG" = "true" ] && echo "Using height $use_height"
+                [ "$debug" = "true" ] && echo "Using height $use_height"
             else
                 echo "You can only specify the height argument once!"
             fi
@@ -56,7 +64,7 @@ else
 fi
 
 url=$(curl -fsSL "$imgurl" | jq -r ".url")
-[ "$DEBUG" = "true" ] && echo "Using image at url $url"
+[ "$debug" = "true" ] && echo "Using image at url $url"
 
 curl -fsSLo "$tmpfile.jpg" "$url"
 if [ "$TERM" = "xterm-kitty" ]; then
