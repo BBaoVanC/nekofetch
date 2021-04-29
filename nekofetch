@@ -29,7 +29,7 @@ while :; do
         "--height"|"-h")
             if [ -z "$use_height" ]; then
                 use_height="$2"
-                [ "$DEBUG" = "true" ] && echo "Using height $height"
+                [ "$DEBUG" = "true" ] && echo "Using height $use_height"
             else
                 echo "You can only specify the height argument once!"
             fi
