@@ -7,7 +7,7 @@ use_height=""
 while :; do
     case "$1" in
         "--nsfw"|"nsfw"|"-n"|"n")
-            if [ "$imgtype" = "" ]; then
+            if [ -z "$imgtype" ]; then
                 [ "$DEBUG" = "true" ] && echo "Getting a nsfw image"
                 imgtype="nsfw"
             else
@@ -15,7 +15,7 @@ while :; do
             fi
             ;;
         "--sfw"|"sfw"|"-s"|"s")
-            if [ "$imgtype" = "" ]; then
+            if [ -z "$imgtype" ]; then
                 [ "$DEBUG" = "true" ] && echo "Getting a sfw image"
                 imgtype="sfw"
             else
@@ -27,7 +27,7 @@ while :; do
             use_w3m="true"
             ;;
         "--height"|"-h")
-            if [ "$use_height" = "" ]; then
+            if [ -z "$use_height" ]; then
                 use_height="$2"
                 [ "$DEBUG" = "true" ] && echo "Using height $height"
             else
@@ -51,7 +51,7 @@ else
     imgurl="https://nekos.life/api/v2/img/neko"
 fi
 
-if [ "$use_height" != "" ]; then
+if [ ! -z "$use_height" ]; then
     height="$use_height"
 else
     height="$(($(stty size | awk '{print $1}') - 5))"
