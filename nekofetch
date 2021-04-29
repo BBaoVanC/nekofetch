@@ -12,6 +12,7 @@ while :; do
                 echo "debug has already been enabled!"
             fi
             ;;
+
         "--nsfw"|"nsfw"|"-n"|"n")
             if [ -z "$imgtype" ]; then
                 [ "$debug" = "true" ] && echo "Getting a nsfw image"
@@ -20,6 +21,7 @@ while :; do
                 echo "$imgtype images were already chosen! Please only specify either sfw or nsfw!"
             fi
             ;;
+
         "--sfw"|"sfw"|"-s"|"s")
             if [ -z "$imgtype" ]; then
                 [ "$debug" = "true" ] && echo "Getting a sfw image"
@@ -28,10 +30,12 @@ while :; do
                 echo "$imgtype images were already chosen! Please only specify either sfw or nsfw!"
             fi
             ;;
+
         "--w3m"|"w3m"|"--img"|"img"|"-i"|"i")
             [ "$debug" = "true" ] && echo "Using w3m image backend for neofetch"
             use_w3m="true"
             ;;
+
         "--height"|"-h")
             if [ -z "$use_height" ]; then
                 use_height="$2"
@@ -41,6 +45,7 @@ while :; do
             fi
             shift
             ;;
+
         *)
             if [ -z "$1" ]; then
                 break
@@ -73,10 +78,13 @@ if [ "$TERM" = "xterm-kitty" ]; then
         jp2a --height="$height" "$tmpfile.jpg" > "$tmpfile"
         neofetch --source "$tmpfile"
     fi
+
 elif [ "$LC_TERMINAL" = "iTerm2" ]; then
     neofetch --iterm2 "$tmpfile.jpg"
+
 elif [ "$use_w3m" = "true" ]; then
     neofetch --w3m "$tmpfile.jpg"
+
 else
     jp2a --height="$height" "$tmpfile.jpg" > "$tmpfile"
     neofetch --source "$tmpfile"
