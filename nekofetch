@@ -13,6 +13,26 @@ while :; do
             fi
             ;;
 
+        "--offline"|"-o")
+            if [ -z "$offline" ]; then
+                [ "$debug" = "true" ] && echo "Enabling offline mode"
+                offline="true"
+            else
+                echo "offline has already been enabled!"
+            fi
+            ;;
+
+        "--nekodir")
+            if [ -z "$nekodir" ]; then
+                nekodir="$2"
+                offline="true"
+                [ "$debug" = "true" ] && echo "Using offline dir $nekodir"
+            else
+                echo "You can only specify the neko dir argument once!"
+            fi
+            shift
+            ;;
+
         "--nsfw"|"nsfw"|"-n"|"n")
             if [ -z "$imgtype" ]; then
                 [ "$debug" = "true" ] && echo "Getting a nsfw image"
@@ -55,11 +75,21 @@ while :; do
     esac
     shift
 done
+offlineloc="${nekodir:-/usr/share/nekofetch/nekos}"
+if [ "$offline" = "true" ]; then
+    if [ ! -d "$offlineloc" ]; then
+        echo "The specified offline images location ($offlineloc) does not exist or is not a directory!"
+        exit 1
+    fi
+fi
+[ "$debug" = "true" ] && [ "$offline" = "true" ] && echo "The offline images location is $offlineloc"
 
-if [ "$imgtype" = "nsfw" ]; then
-    imgurl="https://nekos.life/api/v2/img/cum_jpg"
-else
-    imgurl="https://nekos.life/api/v2/img/neko"
+if [ ! "$offline" = "true" ]; then
+    if [ "$imgtype" = "nsfw" ]; then
+        imgurl="https://nekos.life/api/v2/img/cum_jpg"
+    else
+        imgurl="https://nekos.life/api/v2/img/neko"
+    fi
 fi
 
 if [ -n "$use_height" ]; then
@@ -68,10 +98,15 @@ else
     height="$(($(stty size | awk '{print $1}') - 5))"
 fi
 
-url=$(curl -fsSL "$imgurl" | jq -r ".url")
-[ "$debug" = "true" ] && echo "Using image at url $url"
+if [ "$offline" = "true" ]; then
+    pickdir="$offlineloc/$imgtype"
+    cp "$(find "$pickdir" -type f | shuf -n 1)" "$tmpfile.jpg"
+else
+    url=$(curl -fsSL "$imgurl" | jq -r ".url")
+    [ "$debug" = "true" ] && echo "Using image at url $url"
+    curl -fsSLo "$tmpfile.jpg" "$url"
+fi
 
-curl -fsSLo "$tmpfile.jpg" "$url"
 if [ "$TERM" = "xterm-kitty" ]; then
     command -v convert > /dev/null 2>&1 && neofetch --kitty "$tmpfile.jpg" || kitty_imagemagick_warn=true
     if [ "$kitty_imagemagick_warn" = "true" ]; then
