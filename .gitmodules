@@ -1,0 +1,3 @@
+[submodule "nekos"]
+	path = nekos
+	url = https://git.boba.best/bbaovanc/nekos.git
