@@ -55,6 +55,11 @@ while :; do
             [ "$debug" = "true" ] && echo "Using w3m image backend for neofetch"
             use_w3m="true"
             ;;
+            
+        "--sixel"|"sixel")
+            [ "$debug" = "true" ] && echo "Using Sixel image backend for neofetch"
+            use_sixel="true"
+            ;;
 
         "--height"|"-h")
             if [ -z "$use_height" ]; then
@@ -119,7 +124,10 @@ elif [ "$LC_TERMINAL" = "iTerm2" ]; then
 
 elif [ "$use_w3m" = "true" ]; then
     neofetch --w3m "$tmpfile.jpg"
-
+    
+elif [ "$use_sixel" = "true"]; then
+    neofetch --sixel "$tmpfile.jpg"
+    
 else
     jp2a --height="$height" "$tmpfile.jpg" > "$tmpfile"
     neofetch --source "$tmpfile"
