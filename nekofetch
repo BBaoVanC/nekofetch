@@ -3,11 +3,12 @@
 tmpfile="$(mktemp)"
 
 while :; do
+
     case "$1" in
         "--verbose"|"--debug"|"-v")
             if [ -z "$debug" ]; then
-                [ "$debug" = "true" ] && echo "Enabling debug output"
                 debug="true"
+                [ "$debug" = "true" ] && echo "Enabling debug output"
             else
                 echo "debug has already been enabled!"
             fi
@@ -38,7 +39,7 @@ while :; do
                 [ "$debug" = "true" ] && echo "Getting a nsfw image"
                 imgtype="nsfw"
             else
-                echo "$imgtype images were already chosen! Please only specify either sfw or nsfw!"
+                echo "$imgtype images were already chosen! Please only specify either type, sfw or nsfw!"
             fi
             ;;
 
@@ -47,7 +48,15 @@ while :; do
                 [ "$debug" = "true" ] && echo "Getting a sfw image"
                 imgtype="sfw"
             else
-                echo "$imgtype images were already chosen! Please only specify either sfw or nsfw!"
+                echo "$imgtype images were already chosen! Please only specify either type, sfw or nsfw!"
+            fi
+            ;;
+
+        "--type"|"-t")
+            if [ -z "$imgtype" ]; then
+                imgtype="__ask"
+            else
+                echo "$imgtype images were already chosen! Please only specify either type, sfw or nsfw!"
             fi
             ;;
 
@@ -69,8 +78,11 @@ while :; do
         *)
             if [ -z "$1" ]; then
                 break
+            elif [ "$imgtype" = "__ask" ]; then
+                imgtype="$1"
+            else
+                echo "Could not interpret parameter '$1'."
             fi
-            echo "Could not interpret parameter '$1'."
             ;;
     esac
     shift
@@ -87,8 +99,10 @@ fi
 if [ ! "$offline" = "true" ]; then
     if [ "$imgtype" = "nsfw" ]; then
         imgurl="https://nekos.life/api/v2/img/cum_jpg"
-    else
+    elif [ "$imgtype" = "sfw" ] || [ -z "$imgtype" ]; then
         imgurl="https://nekos.life/api/v2/img/neko"
+    else
+        imgurl="https://nekos.life/api/v2/img/$imgtype"
     fi
 fi
 
@@ -121,7 +135,11 @@ elif [ "$use_w3m" = "true" ]; then
     neofetch --w3m "$tmpfile.jpg"
 
 else
-    jp2a --height="$height" "$tmpfile.jpg" > "$tmpfile"
+    if [ -z "$colors" ]; then
+        jp2a --height="$height" "$tmpfile.jpg" > "$tmpfile"
+    else
+        jp2a --height="$height" --colors "$tmpfile.jpg" > "$tmpfile"
+    fi
     neofetch --source "$tmpfile"
 fi
 
