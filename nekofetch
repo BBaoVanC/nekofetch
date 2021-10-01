@@ -3,7 +3,6 @@
 tmpfile="$(mktemp)"
 
 while :; do
-
     case "$1" in
         "--verbose"|"--debug"|"-v")
             if [ -z "$debug" ]; then
@@ -135,11 +134,7 @@ elif [ "$use_w3m" = "true" ]; then
     neofetch --w3m "$tmpfile.jpg"
 
 else
-    if [ -z "$colors" ]; then
-        jp2a --height="$height" "$tmpfile.jpg" > "$tmpfile"
-    else
-        jp2a --height="$height" --colors "$tmpfile.jpg" > "$tmpfile"
-    fi
+    jp2a --height="$height" "$tmpfile.jpg" > "$tmpfile"
     neofetch --source "$tmpfile"
 fi
 
